@@ -31,7 +31,7 @@ void saxpy_tbb(
 }
 
 void fill_tbb(
-  std::normal_distribution<int> norm,
+  std::uniform_int_distribution<int> uid,
   std::default_random_engine dre,
   std::vector<int> *x
 ) {
@@ -39,7 +39,7 @@ void fill_tbb(
     tbb::blocked_range<int>(0, x->size()),
     [&](tbb::blocked_range<int> r) {
       for (size_t i = r.begin(); i != r.end(); i++) {
-        x->assign(i, norm(dre));
+        x->assign(i, uid(dre));
       }
     }
   );
@@ -52,11 +52,11 @@ int main () {
 
   std::random_device rd;
   std::default_random_engine dre(rd());
-  std::normal_distribution<int> norm(0, 99);
+  std::uniform_int_distribution<int> uid(0, 99);
 
   // generate values
-  auto a = norm(dre);
-  fill_tbb(norm, dre, &x);
+  auto a = uid(dre);
+  fill_tbb(uid, dre, &x);
 
   const int sampleMax = 1000;
 
